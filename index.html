@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Transaction Receipt OCR</title>
+</head>
+<body>
+    <h1>Upload Transaction Receipt</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="imageInput" name="image" accept="image/*" required>
+        <button type="submit">Upload & Extract</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('uploadForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('image', document.getElementById('imageInput').files[0]);
+            document.getElementById('result').innerText = "Processing...";
+            const response = await fetch('/extract', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            document.getElementById('result').innerHTML = `
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+        };
+    </script>
+</body>
+</html>
